@@ -15,22 +15,23 @@ namespace AFIRegistrationAPI.Models
             [Key]
             public int Id { get; set; }
 
+            [Required]
             [StringLength(50, MinimumLength =3)]
             public String Firstname { get; set; }
 
-
+            [Required]
             [StringLength(50, MinimumLength = 3)]
             public String Surname { get; set; }
 
             [Required]
-            [RegularExpression(@"^([A-Z]){2}([\-]){1}([0-9]){6}$",ErrorMessage = "Please enter a valid Policy Number")]
+            [RegularExpression(RegularExpressions.PolicyNumberRegex, ErrorMessage = ErrorMessages.InvalidPolicyNumber)]
             public string PolicyNumber { get; set; }
 
             [Required]
             public DateTime DateOfBirth { get; set; }
 
             [Required]
-            [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",ErrorMessage = "Please enter a valid Email")]
+            [RegularExpression(RegularExpressions.EmailRegex, ErrorMessage = ErrorMessages.InvalidEmailAddress)]
             public string Email { get; set; }
 
             public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AFIRegistrationAPI.AFIRegistration.DAL;
 using AFIRegistrationAPI.Models;
+using AFIRegistrationAPI.APIRegistration.DAL.Repository;
 
 namespace AFIRegistrationAPI.Controllers
 {
@@ -14,98 +15,44 @@ namespace AFIRegistrationAPI.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly CustomerDBContext _context;
+        private readonly IRegistrationRepository _repository;
 
-        public CustomersController(CustomerDBContext context)
+        public CustomersController(IRegistrationRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        // GET: api/Customers
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCust()
-        {
-            return await _context.Cust.ToListAsync();
-        }
-
+                     
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public IActionResult GetCustomer(int id)
         {
-            var customer = await _context.Cust.FindAsync(id);
+            var customer =  _repository.GetById(id);
 
             if (customer == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            return Ok(customer);
         }
 
-        // PUT: api/Customers/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
-        {
-            if (id != customer.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(customer).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
+       
 
         // POST: api/Customers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public IActionResult PostCustomer(Customer customer)
         {
-           
-            _context.Cust.Add(customer);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+                return BadRequest();
+            var item = _repository.Register(customer);
 
             return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            
+   
         }
 
-        // DELETE: api/Customers/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Customer>> DeleteCustomer(int id)
-        {
-            var customer = await _context.Cust.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            _context.Cust.Remove(customer);
-            await _context.SaveChangesAsync();
-
-            return customer;
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Cust.Any(e => e.Id == id);
-        }
     }
 }

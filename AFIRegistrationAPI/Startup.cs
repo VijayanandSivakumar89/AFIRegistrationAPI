@@ -1,4 +1,5 @@
 using AFIRegistrationAPI.AFIRegistration.DAL;
+using AFIRegistrationAPI.APIRegistration.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,7 @@ namespace AFIRegistrationAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CustomerDBContext>(options => options.UseSqlite(Configuration.GetConnectionString("CustDB")));
+            services.AddScoped<IRegistrationRepository, RegistrationRepository>(); //Dependency Injection for Repository Class to create object for controller
             services.AddControllers();
         }
 

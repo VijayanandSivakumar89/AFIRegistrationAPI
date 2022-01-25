@@ -7,10 +7,10 @@ namespace AFIRegistrationAPI.Utilities
 {
     public static class ErrorMessages
     {
-        public static string InvalidEmailAddress = "Please enter a valid EmailAddress";
+        public  const string InvalidEmailAddress = "Please enter a valid EmailAddress";
 
-        public static string InvalidPolicyNumber = "Please enter a valid Policy Number";
+        public const string InvalidPolicyNumber = "Please enter a valid Policy Number";
 
-        public static string UserNotAllowed = "User not allowed for Registration";
+        public const string UserNotAllowed = "User not allowed for Registration";
     }
 }
